@@ -38,6 +38,9 @@ Typically you do it in your host by adding a volume in the `docker-compose.yml` 
 
 ## History
 
+- 2026-03-02:
+  - updated Angular and packages.
+  - ⚠️ migrated to `OnPush`.
 - 2026-02-25:
   - minor fix to login page.
   - updated Angular and packages.

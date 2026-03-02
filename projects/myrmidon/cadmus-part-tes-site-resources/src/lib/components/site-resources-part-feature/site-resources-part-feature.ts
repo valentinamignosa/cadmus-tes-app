@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -13,6 +13,7 @@ import { SiteResourcesPartComponent } from '../site-resources-part/site-resource
   imports: [CurrentItemBarComponent, SiteResourcesPartComponent],
   templateUrl: './site-resources-part-feature.html',
   styleUrl: './site-resources-part-feature.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteResourcesPartFeature extends EditPartFeatureBase implements OnInit {
   constructor(

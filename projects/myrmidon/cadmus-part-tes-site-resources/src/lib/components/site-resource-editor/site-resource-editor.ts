@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -51,6 +51,7 @@ import { SiteResource } from '../../site-resources-part';
   ],
   templateUrl: './site-resource-editor.html',
   styleUrl: './site-resource-editor.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteResourceEditor {
   /**

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
@@ -36,10 +36,10 @@ import { AppRepository } from '@myrmidon/cadmus-state';
 export class App implements OnInit, OnDestroy {
   private readonly _subs: Subscription[] = [];
 
-  public user?: User;
-  public logged?: boolean;
-  public itemBrowsers?: ThesaurusEntry[];
-  public version: string;
+  public readonly user = signal<User | undefined>(undefined);
+  public readonly logged = signal<boolean>(false);
+  public readonly itemBrowsers = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly version = signal<string>('');
 
   constructor(
     @Inject('itemBrowserKeys')
@@ -51,7 +51,7 @@ export class App implements OnInit, OnDestroy {
     storage: RamStorageService,
     zotero: ZoteroRefLookupService,
   ) {
-    this.version = env.get('version') || '';
+    this.version.set(env.get('version') || '');
 
     // configure external lookup for asserted composite IDs
     storage.store(LOOKUP_CONFIGS_KEY, [
@@ -96,14 +96,14 @@ export class App implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.user = this._authService.currentUserValue || undefined;
-    this.logged = this.user !== null;
+    this.user.set(this._authService.currentUserValue || undefined);
+    this.logged.set(this.user() !== undefined);
 
     // when the user logs in or out, reload the app data
     this._subs.push(
       this._authService.currentUser$.subscribe((user: User | null) => {
-        this.logged = this._authService.isAuthenticated(true);
-        this.user = user || undefined;
+        this.logged.set(this._authService.isAuthenticated(true));
+        this.user.set(user || undefined);
         if (user) {
           console.log('User logged in: ', user);
           this._appRepository.load();
@@ -116,7 +116,7 @@ export class App implements OnInit, OnDestroy {
     // when the thesaurus is loaded, get the item browsers
     this._subs.push(
       this._appRepository.itemBrowserThesaurus$.subscribe((thesaurus: Thesaurus | undefined) => {
-        this.itemBrowsers = thesaurus ? thesaurus.entries : undefined;
+        this.itemBrowsers.set(thesaurus ? thesaurus.entries : undefined);
       }),
     );
   }
@@ -130,7 +130,7 @@ export class App implements OnInit, OnDestroy {
   }
 
   public logout(): void {
-    if (!this.logged) {
+    if (!this.logged()) {
       return;
     }
     this._authService

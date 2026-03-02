@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -64,6 +64,7 @@ interface SiteResourcesPartSettings {
   ],
   templateUrl: './site-resources-part.component.html',
   styleUrl: './site-resources-part.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteResourcesPartComponent
   extends ModelEditorComponentBase<SiteResourcesPart>
